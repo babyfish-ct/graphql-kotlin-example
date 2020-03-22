@@ -45,6 +45,10 @@ An example for graphql-java-kickstart with data loader
          name
          gender
        }
+       department {
+         id
+         name
+       }
      }
    }
    ```
