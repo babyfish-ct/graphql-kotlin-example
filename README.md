@@ -7,7 +7,7 @@ An example for graphql-java-kickstart with data loader
    + If you want to run it by Intellij, import this project, then open 'src/main/kotlin/org/frchen/graph/example/GraphQLApp.kt' and run it
    + If you want to run it by command line, use "mvn spring-boot:run", or "mvn clean install" and" java -jar target/app.jar"
 
-3. Open your browser, let it access http://localhost:8080/graphiql. (Becareful, graphiql, not graphql)
+3. Open your browser, access http://localhost:8080/graphiql. (Becareful, graphiql, not graphql)
 
 4. You can run the GraphQL query by the web page, here is an example of request body
 
