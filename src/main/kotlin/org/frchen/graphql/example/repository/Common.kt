@@ -74,7 +74,7 @@ data class Binder<E> private constructor(
 abstract class AbstractRepository<E>(
     vararg binders: Binder<E>
 ) {
-    // 此属性必须为open, 否则AOP代理之后为null
+    // This property must be "open", otherwise, AOP proxy will get null
     protected open val binderMap: Map<String, Binder<E>> =
         binders.associateBy { it.name }
 
