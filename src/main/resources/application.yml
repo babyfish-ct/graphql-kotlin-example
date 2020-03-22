@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: SpringBoot-GraphQL-Demo
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:human-resource
+    username: sa
+    hikari:
+      connection-test-query: SELECT 1
+      connection-timeout: 3000
+      maximum-pool-size: 20
+      max-lifetime: 1800000
+      minimum-idle: 5
+  exposed:
+    generate-ddl: true
+
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+    corsEnabled: true
+    exception-handlers-enabled: true
+    contextSetting: PER_REQUEST_WITH_INSTRUMENTATION
+  tools:
+    schemaLocationPattern: "**/*.graphqls"
+
+logging:
+  level:
+    Exposed: DEBUG

@@ -1,0 +1,27 @@
+type Department {
+    id: Long!
+    name: String!
+    location: Location!
+    employees: [Employee!]!
+}
+
+type Employee {
+    id: Long!
+    name: String!
+    gender: Gender!
+    mobile: String!
+    department: Department!
+    supervisor: Employee
+    subordinates: [Employee!]!
+}
+
+enum Gender {
+    MALE,
+    FEMALE
+}
+
+enum Location {
+    BEIJING,
+    SHANGHAI,
+    CHENGDU
+}
