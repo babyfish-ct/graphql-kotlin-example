@@ -29,10 +29,6 @@ An example for graphql-java-kickstart with data loader
            id
            name
          }
-         department {
-           id
-           name
-         }
        }
      }
      example2: findEmployees(gender: FEMALE) {
