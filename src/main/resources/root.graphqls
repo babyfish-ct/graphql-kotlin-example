@@ -1,6 +1,0 @@
-type Query {
-
-    findDepartments(name: String, location: Location): [Department!]!
-
-    findEmployees(name: String, gender: Gender): [Employee!]!
-}

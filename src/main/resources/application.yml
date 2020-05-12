@@ -3,10 +3,10 @@ server:
 
 spring:
   application:
-    name: SpringBoot-GraphQL-Demo
+    name: GraphQL-Training-App
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:human-resource
+    url: jdbc:h2:mem:graphql-training
     username: sa
     hikari:
       connection-test-query: SELECT 1
@@ -18,15 +18,6 @@ spring:
     generate-ddl: true
 
 graphql:
-  servlet:
-    mapping: /graphql
-    enabled: true
-    corsEnabled: true
-    exception-handlers-enabled: true
-    contextSetting: PER_REQUEST_WITH_INSTRUMENTATION
-  tools:
-    schemaLocationPattern: "**/*.graphqls"
-
-logging:
-  level:
-    Exposed: DEBUG
+  packages:
+    - com.citicguoan.training.model
+    - com.citicguoan.training.bll

@@ -1,0 +1,16 @@
+type Mutation {
+    createDepartment(input: CreateDepartmentInput!): Long!
+    createEmployee(input: CreateEmployeeInput!): Long!
+}
+
+type CreateDepartmentInput {
+    name: String!
+}
+
+type CreateEmployeeInput {
+    name: String!
+    gender: Gender!
+    salary: Int!,
+    departmentId: Long!
+    supervisorId: Long
+}
