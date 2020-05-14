@@ -1,4 +1,4 @@
-package com.citicguoan.training.dal
+package com.citicguoan.training.dal.common
 
 import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.Op

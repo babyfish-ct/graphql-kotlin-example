@@ -2,8 +2,7 @@ package com.citicguoan.training.bll
 
 import com.citicguoan.training.dal.DepartmentRepository
 import com.citicguoan.training.dal.EmployeeRepository
-import com.citicguoan.training.model.input.CreateDepartmentInput
-import com.citicguoan.training.model.input.CreateEmployeeInput
+import com.citicguoan.training.model.input.EmployeeInput
 import com.expediagroup.graphql.spring.operations.Mutation
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,10 +14,10 @@ open class OrgMutation(
 ) : Mutation  {
 
     @Transactional
-    open fun createDepartment(input: CreateDepartmentInput): Long =
-        departmentRepository.insert(input)
+    open fun createDepartment(name: String): Long =
+        departmentRepository.insert(name)
 
     @Transactional
-    open fun createEmployee(input: CreateEmployeeInput): Long =
+    open fun createEmployee(input: EmployeeInput): Long =
         employeeRepository.insert(input)
 }

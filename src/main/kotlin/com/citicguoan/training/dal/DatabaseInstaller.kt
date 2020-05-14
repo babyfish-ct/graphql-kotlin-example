@@ -2,12 +2,10 @@ package com.citicguoan.training.dal
 
 import com.citicguoan.training.bll.OrgMutation
 import com.citicguoan.training.model.Gender
-import com.citicguoan.training.model.input.CreateDepartmentInput
-import com.citicguoan.training.model.input.CreateEmployeeInput
+import com.citicguoan.training.model.input.EmployeeInput
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
-import java.math.BigDecimal
 
 @Component
 internal open class DatabaseInstaller(
@@ -15,15 +13,11 @@ internal open class DatabaseInstaller(
 ): ApplicationRunner {
 
     override fun run(args: ApplicationArguments?) {
-        val developId = orgMutation.createDepartment(
-            CreateDepartmentInput("Develop")
-        )
-        val testId = orgMutation.createDepartment(
-            CreateDepartmentInput("Test")
-        )
+        val developId = orgMutation.createDepartment("Develop")
+        val testId = orgMutation.createDepartment("Test")
 
         val jimId = orgMutation.createEmployee(
-            CreateEmployeeInput(
+            EmployeeInput(
                 name = "Jim",
                 gender = Gender.MALE,
                 salary = 10000.toBigDecimal(),
@@ -32,7 +26,7 @@ internal open class DatabaseInstaller(
             )
         )
         orgMutation.createEmployee(
-            CreateEmployeeInput(
+            EmployeeInput(
                 name = "Kate",
                 gender = Gender.FEMALE,
                 salary = 8000.toBigDecimal(),
@@ -41,7 +35,7 @@ internal open class DatabaseInstaller(
             )
         )
         orgMutation.createEmployee(
-            CreateEmployeeInput(
+            EmployeeInput(
                 name = "Bob",
                 gender = Gender.MALE,
                 salary = 7000.toBigDecimal(),
@@ -51,7 +45,7 @@ internal open class DatabaseInstaller(
         )
 
         val lindaId = orgMutation.createEmployee(
-            CreateEmployeeInput(
+            EmployeeInput(
                 name = "Lina",
                 gender = Gender.FEMALE,
                 salary = 11000.toBigDecimal(),
@@ -60,7 +54,7 @@ internal open class DatabaseInstaller(
             )
         )
         orgMutation.createEmployee(
-            CreateEmployeeInput(
+            EmployeeInput(
                 name = "Smith",
                 gender = Gender.MALE,
                 salary = 6000.toBigDecimal(),
@@ -69,7 +63,7 @@ internal open class DatabaseInstaller(
             )
         )
         orgMutation.createEmployee(
-            CreateEmployeeInput(
+            EmployeeInput(
                 name = "Daria",
                 gender = Gender.MALE,
                 salary = 5000.toBigDecimal(),
