@@ -171,5 +171,10 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
                     T.salary lessEq it
                 }
             }
+            criteria?.departmentIds?.let {
+                andWhere {
+                    T.departmentId inList it
+                }
+            }
         }
 }
