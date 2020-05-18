@@ -2,8 +2,9 @@ package com.citicguoan.training.dal
 
 import com.citicguoan.training.dal.common.orderBy
 import com.citicguoan.training.dal.common.smartLike
-import com.citicguoan.training.dal.common.tryLimit
+import com.citicguoan.training.dal.common.limit
 import com.citicguoan.training.model.Department
+import com.citicguoan.training.model.common.Limitation
 import com.citicguoan.training.model.sort.DepartmentSortedType
 import com.citicguoan.training.table.TDepartment
 import org.jetbrains.exposed.sql.*
@@ -19,8 +20,7 @@ interface DepartmentRepository {
         name: String?,
         sortedType: DepartmentSortedType,
         descending: Boolean,
-        limit: Int?,
-        offset: Int?
+        limitation: Limitation?
     ): List<Department>
 
     fun insert(name: String): Long
@@ -61,8 +61,7 @@ internal open class DepartmentRepositoryImpl : DepartmentRepository {
         name: String?,
         sortedType: DepartmentSortedType,
         descending: Boolean,
-        limit: Int?,
-        offset: Int?
+        limitation: Limitation?
     ): List<Department> =
         T
             .slice(T.columns)
@@ -75,7 +74,7 @@ internal open class DepartmentRepositoryImpl : DepartmentRepository {
                     DepartmentSortedType.NAME -> T.name
                 }
             )
-            .tryLimit(limit, offset)
+            .limit(limitation)
             .map(MAPPER)
 
     override fun insert(name: String): Long =

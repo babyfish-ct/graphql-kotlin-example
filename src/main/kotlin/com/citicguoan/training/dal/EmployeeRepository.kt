@@ -2,9 +2,10 @@ package com.citicguoan.training.dal
 
 import com.citicguoan.training.dal.common.orderBy
 import com.citicguoan.training.dal.common.smartLike
-import com.citicguoan.training.dal.common.tryLimit
+import com.citicguoan.training.dal.common.limit
 import com.citicguoan.training.model.Employee
 import com.citicguoan.training.model.Gender
+import com.citicguoan.training.model.common.Limitation
 import com.citicguoan.training.model.criteria.EmployeeCriteria
 import com.citicguoan.training.model.input.EmployeeInput
 import com.citicguoan.training.model.sort.EmployeeSortedType
@@ -29,8 +30,7 @@ interface EmployeeRepository {
         criteria: EmployeeCriteria?,
         sortedType: EmployeeSortedType,
         descending: Boolean,
-        limit: Int?,
-        offset: Int?
+        limitation: Limitation?
     ): List<Employee>
 
     fun findAvgSalaryGroupByDepartments(
@@ -91,8 +91,7 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
         criteria: EmployeeCriteria?,
         sortedType: EmployeeSortedType,
         descending: Boolean,
-        limit: Int?,
-        offset: Int?
+        limitation: Limitation?
     ): List<Employee> =
         T
             .let {
@@ -121,7 +120,7 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
                         arrayOf(TDepartment.name, T.id)
                 }
             )
-            .tryLimit(limit, offset)
+            .limit(limitation)
             .map(MAPPER)
 
     override fun findAvgSalaryGroupByDepartments(

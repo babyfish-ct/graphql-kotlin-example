@@ -20,5 +20,4 @@ spring:
 graphql:
   packages:
     - com.citicguoan.training.model
-    - com.citicguoan.training.model.common
     - com.citicguoan.training.bll

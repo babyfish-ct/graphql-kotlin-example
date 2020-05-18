@@ -1,5 +1,6 @@
 package com.citicguoan.training.dal.common
 
+import com.citicguoan.training.model.common.Limitation
 import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.SortOrder
@@ -18,12 +19,9 @@ fun Query.orderBy(descending: Boolean, vararg expressions: Expression<*>): Query
     return this
 }
 
-fun Query.tryLimit(limit: Int?, offset: Int?): Query =
-    if (limit === null) {
-        if (offset !== null) {
-            throw IllegalArgumentException("limit cannot be null when offset is not null")
-        }
+fun Query.limit(limitation: Limitation?): Query =
+    if (limitation === null) {
         this
     } else {
-        limit(limit, offset ?: 0)
+        limit(limitation.value, limitation.offset)
     }
