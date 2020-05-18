@@ -39,7 +39,7 @@ open class Page (
             rowCount: Int
         ) : Page {
             if (pageSize < 1) {
-                throw IllegalArgumentException("pageSize cannot be less thant 1")
+                throw IllegalArgumentException("pageSize cannot be less than 1")
             }
             if (rowCount < 0) {
                 throw IllegalArgumentException("rowCount cannot be less thant 0")
