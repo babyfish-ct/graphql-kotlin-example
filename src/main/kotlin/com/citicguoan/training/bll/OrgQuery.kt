@@ -3,7 +3,7 @@ package com.citicguoan.training.bll
 import com.citicguoan.training.dal.DepartmentRepository
 import com.citicguoan.training.dal.EmployeeRepository
 import com.citicguoan.training.model.*
-import com.citicguoan.training.model.common.Page
+import com.citicguoan.training.model.common.Limitation
 import com.citicguoan.training.model.criteria.EmployeeCriteria
 import com.citicguoan.training.model.sort.DepartmentSortedType
 import com.citicguoan.training.model.sort.EmployeeSortedType
@@ -24,30 +24,23 @@ open class OrgQuery(
             .firstOrNull()
 
     @Transactional(readOnly = true)
-    open fun departmentPage(
+    open fun departmentCount(name: String?): Int =
+        departmentRepository.count(name)
+
+    @Transactional(readOnly = true)
+    open fun departments(
         name: String?,
-        sortedType: DepartmentSortedType,
-        descending: Boolean,
-        pageNo: Int,
-        pageSize: Int
-    ): DepartmentPage =
-        Page
-            .of(
-                pageNo = pageNo,
-                pageSize = pageSize,
-                rowCount = departmentRepository.count(name)
-            )
-            .let {
-                DepartmentPage(
-                    it,
-                    departmentRepository.find(
-                        name,
-                        sortedType = sortedType,
-                        descending = descending,
-                        limitation = it.limitation
-                    )
-                )
-            }
+        sortedType: DepartmentSortedType?,
+        descending: Boolean?,
+        limit: Int?,
+        offset: Int?
+    ): List<Department> =
+        departmentRepository.find(
+            name,
+            sortedType = sortedType ?: DepartmentSortedType.ID,
+            descending = descending ?: false,
+            limitation = Limitation.of(limit, offset)
+        )
 
     @Transactional(readOnly = true)
     open fun employee(id: Long): Employee? =
@@ -56,28 +49,21 @@ open class OrgQuery(
             .firstOrNull()
 
     @Transactional(readOnly = true)
-    open fun employeePage(
+    open fun employeeCount(criteria: EmployeeCriteria?): Int =
+        employeeRepository.count(criteria)
+
+    @Transactional(readOnly = true)
+    open fun employees(
         criteria: EmployeeCriteria?,
-        sortedType: EmployeeSortedType,
-        descending: Boolean,
-        pageNo: Int,
-        pageSize: Int
-    ): EmployeePage =
-        Page
-            .of(
-                pageNo = pageNo,
-                pageSize = pageSize,
-                rowCount = employeeRepository.count(criteria)
-            )
-            .let {
-                EmployeePage(
-                    it,
-                    employeeRepository.find(
-                        criteria,
-                        sortedType = sortedType,
-                        descending = descending,
-                        limitation = it.limitation
-                    )
-                )
-            }
+        sortedType: EmployeeSortedType?,
+        descending: Boolean?,
+        limit: Int?,
+        offset: Int?
+    ): List<Employee> =
+        employeeRepository.find(
+            criteria,
+            sortedType = sortedType ?: EmployeeSortedType.ID,
+            descending = descending ?: false,
+            limitation = Limitation.of(limit, offset)
+        )
 }

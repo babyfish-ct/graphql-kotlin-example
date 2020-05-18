@@ -1,6 +1,20 @@
 package com.citicguoan.training.model.common
 
-class Limitation(
+import java.lang.IllegalArgumentException
+
+data class Limitation(
     val value: Int,
     val offset: Int = 0
-)
+) {
+    companion object {
+        fun of(limit: Int?, offset: Int?): Limitation? =
+            if (limit === null) {
+                if (offset !== null) {
+                    throw IllegalArgumentException("offset must be null when limit is null")
+                }
+                null
+            } else {
+                Limitation(limit, offset ?: 0)
+            }
+    }
+}
