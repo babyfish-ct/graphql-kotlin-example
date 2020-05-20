@@ -1,19 +1,26 @@
 package com.citicguoan.training
 
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.config.CorsRegistry
-import org.springframework.web.reactive.config.EnableWebFlux
-import org.springframework.web.reactive.config.WebFluxConfigurer
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.reactive.CorsWebFilter
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 
 @Configuration
-@EnableWebFlux
-internal open class CorsConfigurer : WebFluxConfigurer {
+internal open class CorsConfigurer {
 
-    override fun addCorsMappings(registry: CorsRegistry) {
-        registry
-            .addMapping("/**")
-            .allowedOrigins("*")
-            .allowedMethods("*")
-            .maxAge(4600)
-    }
+    @Bean
+    open fun corsFilter(): CorsWebFilter = CorsWebFilter(
+        UrlBasedCorsConfigurationSource().apply {
+            registerCorsConfiguration(
+                "/graphql",
+                CorsConfiguration().apply {
+                    allowCredentials = true
+                    allowedOrigins = listOf("*")
+                    allowedHeaders = listOf("*")
+                    allowedMethods = listOf("*")
+                }
+            )
+        }
+    )
 }
