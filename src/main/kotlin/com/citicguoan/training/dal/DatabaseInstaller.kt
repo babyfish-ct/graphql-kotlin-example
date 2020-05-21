@@ -46,7 +46,7 @@ internal open class DatabaseInstaller(
 
         val lindaId = orgMutation.createEmployee(
             EmployeeInput(
-                name = "Lina",
+                name = "Linda",
                 gender = Gender.FEMALE,
                 salary = 11000.toBigDecimal(),
                 departmentId = testId,
@@ -65,7 +65,7 @@ internal open class DatabaseInstaller(
         orgMutation.createEmployee(
             EmployeeInput(
                 name = "Daria",
-                gender = Gender.MALE,
+                gender = Gender.FEMALE,
                 salary = 5000.toBigDecimal(),
                 departmentId = testId,
                 supervisorId = lindaId

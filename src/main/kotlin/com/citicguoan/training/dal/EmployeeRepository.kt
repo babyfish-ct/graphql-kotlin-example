@@ -4,16 +4,14 @@ import com.citicguoan.training.dal.common.orderBy
 import com.citicguoan.training.dal.common.smartLike
 import com.citicguoan.training.dal.common.limit
 import com.citicguoan.training.model.Employee
-import com.citicguoan.training.model.Gender
 import com.citicguoan.training.model.common.Limitation
-import com.citicguoan.training.model.criteria.EmployeeCriteria
+import com.citicguoan.training.model.criteria.EmployeeCriteriaInput
 import com.citicguoan.training.model.input.EmployeeInput
 import com.citicguoan.training.model.sort.EmployeeSortedType
 import com.citicguoan.training.table.TDepartment
 import com.citicguoan.training.table.TEmployee
 import org.jetbrains.exposed.sql.*
 import org.springframework.stereotype.Repository
-import java.lang.IllegalArgumentException
 import java.math.BigDecimal
 
 interface EmployeeRepository {
@@ -24,10 +22,10 @@ interface EmployeeRepository {
 
     fun findBySupervisorIds(supervisorIds: Collection<Long>): List<Employee>
 
-    fun count(criteria: EmployeeCriteria?): Int
+    fun count(criteria: EmployeeCriteriaInput?): Int
 
     fun find(
-        criteria: EmployeeCriteria?,
+        criteria: EmployeeCriteriaInput?,
         sortedType: EmployeeSortedType,
         descending: Boolean,
         limitation: Limitation?
@@ -77,7 +75,7 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
             .select { T.supervisorId inList supervisorIds }
             .map(MAPPER)
 
-    override fun count(criteria: EmployeeCriteria?): Int =
+    override fun count(criteria: EmployeeCriteriaInput?): Int =
         T.id.count().let { countExpr ->
             T
                 .slice(countExpr)
@@ -88,7 +86,7 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
         }
 
     override fun find(
-        criteria: EmployeeCriteria?,
+        criteria: EmployeeCriteriaInput?,
         sortedType: EmployeeSortedType,
         descending: Boolean,
         limitation: Limitation?
@@ -148,7 +146,7 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
             it[supervisorId] = input.supervisorId
         }.value
 
-    private fun Query.applyConditions(criteria: EmployeeCriteria?): Query =
+    private fun Query.applyConditions(criteria: EmployeeCriteriaInput?): Query =
         apply {
             criteria?.name?.takeIf { it.isNotEmpty() }?.let {
                 andWhere {

@@ -4,7 +4,7 @@ import com.citicguoan.training.dal.DepartmentRepository
 import com.citicguoan.training.dal.EmployeeRepository
 import com.citicguoan.training.model.*
 import com.citicguoan.training.model.common.Limitation
-import com.citicguoan.training.model.criteria.EmployeeCriteria
+import com.citicguoan.training.model.criteria.EmployeeCriteriaInput
 import com.citicguoan.training.model.sort.DepartmentSortedType
 import com.citicguoan.training.model.sort.EmployeeSortedType
 import com.expediagroup.graphql.spring.operations.Query
@@ -49,12 +49,12 @@ open class OrgQuery(
             .firstOrNull()
 
     @Transactional(readOnly = true)
-    open fun employeeCount(criteria: EmployeeCriteria?): Int =
+    open fun employeeCount(criteria: EmployeeCriteriaInput?): Int =
         employeeRepository.count(criteria)
 
     @Transactional(readOnly = true)
     open fun employees(
-        criteria: EmployeeCriteria?,
+        criteria: EmployeeCriteriaInput?,
         sortedType: EmployeeSortedType?,
         descending: Boolean?,
         limit: Int?,
