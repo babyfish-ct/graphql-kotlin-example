@@ -12,7 +12,7 @@ internal open class EmployeeLoader(
     employeeRepository: EmployeeRepository
 ) : AbstractValueLoader<Long, Employee>(
     transactionManager,
-    employeeRepository::findByDepartmentIds,
+    employeeRepository::findByIds,
     Employee::id,
     { setMaxBatchSize(256) }
 )
