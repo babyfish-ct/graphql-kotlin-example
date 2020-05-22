@@ -9,7 +9,6 @@ import com.citicguoan.training.loader.common.loadRequiredReferenceAsync
 import com.expediagroup.graphql.annotations.GraphQLIgnore
 import graphql.schema.DataFetchingEnvironment
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.util.concurrent.CompletableFuture
 
 data class Employee(

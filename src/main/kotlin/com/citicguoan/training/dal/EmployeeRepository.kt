@@ -18,9 +18,15 @@ interface EmployeeRepository {
 
     fun findByIds(ids: Collection<Long>): List<Employee>
 
-    fun findByDepartmentIds(departmentIds: Collection<Long>): List<Employee>
+    fun findByDepartmentIds(
+        departmentIds: Collection<Long>,
+        limit: Int? = null
+    ): List<Employee>
 
-    fun findBySupervisorIds(supervisorIds: Collection<Long>): List<Employee>
+    fun findBySupervisorIds(
+        supervisorIds: Collection<Long>,
+        limit: Int? = null
+    ): List<Employee>
 
     fun count(criteria: EmployeeCriteriaInput?): Int
 
@@ -36,6 +42,8 @@ interface EmployeeRepository {
     ): List<Pair<Long, BigDecimal?>>
 
     fun insert(input: EmployeeInput): Long
+
+    fun update(id: Long, input: EmployeeInput): Int
 
     fun delete(id: Long) : Int
 }
@@ -65,16 +73,24 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
             .select { T.id inList ids }
             .map(MAPPER)
 
-    override fun findByDepartmentIds(departmentIds: Collection<Long>): List<Employee> =
+    override fun findByDepartmentIds(
+        departmentIds: Collection<Long>,
+        limit: Int?
+    ): List<Employee> =
         T
             .slice(T.columns)
             .select { T.departmentId inList departmentIds }
+            .limit(Limitation.of(limit))
             .map(MAPPER)
 
-    override fun findBySupervisorIds(supervisorIds: Collection<Long>): List<Employee> =
+    override fun findBySupervisorIds(
+        supervisorIds: Collection<Long>,
+        limit: Int?
+    ): List<Employee> =
         T
             .slice(T.columns)
             .select { T.supervisorId inList supervisorIds }
+            .limit(Limitation.of(limit))
             .map(MAPPER)
 
     override fun count(criteria: EmployeeCriteriaInput?): Int =
@@ -147,6 +163,14 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
             it[departmentId] = input.departmentId
             it[supervisorId] = input.supervisorId
         }.value
+
+    override fun update(id: Long, input: EmployeeInput): Int =
+        T.update({ T.id eq id}) {
+            it[name] = input.name
+            it[gender] = input.gender
+            it[departmentId] = input.departmentId
+            it[supervisorId] = input.supervisorId
+        }
 
     override fun delete(id: Long): Int =
         T.deleteWhere { T.id eq id }

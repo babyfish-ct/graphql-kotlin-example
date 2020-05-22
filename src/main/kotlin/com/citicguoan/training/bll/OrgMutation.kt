@@ -18,14 +18,51 @@ open class OrgMutation(
         departmentRepository.insert(name)
 
     @Transactional
-    open fun deleteDepartment(id: Long): Boolean =
-        departmentRepository.delete(id) != 0
+    open fun modifyDepartment(id: Long, name: String): Boolean =
+        departmentRepository.update(id, name) != 0
+
+    @Transactional
+    open fun deleteDepartment(id: Long): Boolean {
+        if (employeeRepository.findByDepartmentIds(listOf(id), 1).isNotEmpty()) {
+            throw IllegalArgumentException(
+                "Department whose id is $id has employee so that it cannot be deleted"
+            )
+        }
+        return departmentRepository.delete(id) != 0
+    }
 
     @Transactional
     open fun createEmployee(input: EmployeeInput): Long =
         employeeRepository.insert(input)
 
     @Transactional
-    open fun deleteEmployee(id: Long): Boolean =
-        employeeRepository.delete(id) != 0
+    open fun modifyEmployee(id: Long, input: EmployeeInput): Boolean {
+        validateSupervisorReferenceCycle(id, input.supervisorId)
+        return employeeRepository.update(id, input) != 0
+    }
+
+    @Transactional
+    open fun deleteEmployee(id: Long): Boolean {
+        if (employeeRepository.findBySupervisorIds(listOf(id), 1).isNotEmpty()) {
+            throw IllegalArgumentException(
+                "Employee whose id is $id has subordinates so that it cannot be deleted"
+            )
+        }
+        return employeeRepository.delete(id) != 0
+    }
+
+    private fun validateSupervisorReferenceCycle(id: Long, supervisorId: Long?) {
+        if (supervisorId === null) {
+            return
+        }
+        if (id == supervisorId) {
+            throw IllegalArgumentException("Supervisor cycle")
+        }
+        employeeRepository
+            .findByIds(listOf(supervisorId))
+            .firstOrNull()
+            ?.let {
+                validateSupervisorReferenceCycle(id, it.supervisorId)
+            }
+    }
 }

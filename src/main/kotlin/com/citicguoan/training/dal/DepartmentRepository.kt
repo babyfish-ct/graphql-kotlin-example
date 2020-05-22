@@ -25,6 +25,8 @@ interface DepartmentRepository {
 
     fun insert(name: String): Long
 
+    fun update(id: Long, name: String): Int
+
     fun delete(id: Long): Int
 }
 
@@ -83,6 +85,11 @@ internal open class DepartmentRepositoryImpl : DepartmentRepository {
         T.insertAndGetId {
             it[T.name] = name
         }.value
+
+    override fun update(id: Long, name: String): Int =
+        T.update({ T.id eq id }) {
+            it[T.name] = name
+        }
 
     override fun delete(id: Long): Int =
         T.deleteWhere { T.id eq id }
