@@ -9,4 +9,5 @@ object TDepartment : IdTable<Long>("department") {
         .entityId()
 
     val name = varchar("name", 20)
+        .uniqueIndex("department_name_uidx")
 }

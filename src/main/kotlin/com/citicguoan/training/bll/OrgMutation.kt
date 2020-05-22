@@ -18,6 +18,14 @@ open class OrgMutation(
         departmentRepository.insert(name)
 
     @Transactional
+    open fun deleteDepartment(id: Long): Boolean =
+        departmentRepository.delete(id) != 0
+
+    @Transactional
     open fun createEmployee(input: EmployeeInput): Long =
         employeeRepository.insert(input)
+
+    @Transactional
+    open fun deleteEmployee(id: Long): Boolean =
+        employeeRepository.delete(id) != 0
 }

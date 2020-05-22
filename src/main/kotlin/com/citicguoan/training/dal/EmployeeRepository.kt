@@ -36,6 +36,8 @@ interface EmployeeRepository {
     ): List<Pair<Long, BigDecimal?>>
 
     fun insert(input: EmployeeInput): Long
+
+    fun delete(id: Long) : Int
 }
 
 @Repository
@@ -145,6 +147,9 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
             it[departmentId] = input.departmentId
             it[supervisorId] = input.supervisorId
         }.value
+
+    override fun delete(id: Long): Int =
+        T.deleteWhere { T.id eq id }
 
     private fun Query.applyConditions(criteria: EmployeeCriteriaInput?): Query =
         apply {

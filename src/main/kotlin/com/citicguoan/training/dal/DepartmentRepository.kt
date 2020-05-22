@@ -24,6 +24,8 @@ interface DepartmentRepository {
     ): List<Department>
 
     fun insert(name: String): Long
+
+    fun delete(id: Long): Int
 }
 
 @Repository
@@ -81,6 +83,9 @@ internal open class DepartmentRepositoryImpl : DepartmentRepository {
         T.insertAndGetId {
             it[T.name] = name
         }.value
+
+    override fun delete(id: Long): Int =
+        T.deleteWhere { T.id eq id }
 
     private fun Query.applyConditions(name: String?): Query =
         apply {
