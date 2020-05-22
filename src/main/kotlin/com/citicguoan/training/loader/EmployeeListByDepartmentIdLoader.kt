@@ -12,7 +12,7 @@ internal open class EmployeeListByDepartmentIdLoader(
     employeeRepository: EmployeeRepository
 ) : AbstractListLoader<Long, Employee>(
     transactionManager,
-    employeeRepository::findByDepartmentIds,
+    { employeeRepository.findByDepartmentIds(it) },
     Employee::departmentId,
     { setMaxBatchSize(16) }
 )
