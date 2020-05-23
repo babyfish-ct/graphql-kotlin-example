@@ -1,5 +1,6 @@
 package com.citicguoan.training.bll
 
+import com.citicguoan.training.bll.exception.BusinessException
 import com.citicguoan.training.dal.DepartmentRepository
 import com.citicguoan.training.dal.EmployeeRepository
 import com.citicguoan.training.model.input.EmployeeInput
@@ -22,14 +23,25 @@ open class OrgMutation(
         departmentRepository.update(id, name) != 0
 
     @Transactional
-    open fun deleteDepartment(id: Long): Boolean {
-        if (employeeRepository.findByDepartmentIds(listOf(id), 1).isNotEmpty()) {
-            throw IllegalArgumentException(
-                "Department whose id is $id has employee so that it cannot be deleted"
-            )
-        }
-        return departmentRepository.delete(id) != 0
-    }
+    open fun deleteDepartment(id: Long): Boolean =
+        employeeRepository
+            .findByDepartmentIds(listOf(id))
+            .takeIf { it.isNotEmpty() }
+            ?.let { list ->
+                throw BusinessException(
+                    "CANNOT_DELETE_DEPARTMENT_WITH_EMPLOYEES",
+                    "Cannot delete the department $id because it has employees",
+                    mapOf(
+                        "departmentId" to id,
+                        "employees" to list.map { it ->
+                            mapOf(
+                                "id" to it.id,
+                                "name" to it.name
+                            )
+                        }
+                    )
+                )
+            } ?: departmentRepository.delete(id) != 0
 
     @Transactional
     open fun createEmployee(input: EmployeeInput): Long =
@@ -42,21 +54,32 @@ open class OrgMutation(
     }
 
     @Transactional
-    open fun deleteEmployee(id: Long): Boolean {
-        if (employeeRepository.findBySupervisorIds(listOf(id), 1).isNotEmpty()) {
-            throw IllegalArgumentException(
-                "Employee whose id is $id has subordinates so that it cannot be deleted"
-            )
-        }
-        return employeeRepository.delete(id) != 0
-    }
+    open fun deleteEmployee(id: Long): Boolean =
+        employeeRepository
+            .findBySupervisorIds(listOf(id))
+            .takeIf{ it.isNotEmpty() }
+            ?.let { list ->
+                throw BusinessException(
+                    "CANNOT_DELETE_DEPARTMENT_WITH_SUBORDINATES",
+                    "Cannot delete the employee $id because it has subordinates",
+                    mapOf(
+                        "employeeId" to id,
+                        "subordinates" to list.map { emp ->
+                            mapOf(
+                                "id" to emp.id,
+                                "name" to emp.name
+                            )
+                        }
+                    )
+                )
+            } ?:employeeRepository.delete(id) != 0
 
     private fun validateSupervisorReferenceCycle(id: Long, supervisorId: Long?) {
         if (supervisorId === null) {
             return
         }
         if (id == supervisorId) {
-            throw IllegalArgumentException("Supervisor cycle")
+            throw IllegalArgumentException("New employee has supervisor cycle")
         }
         employeeRepository
             .findByIds(listOf(supervisorId))
