@@ -168,6 +168,7 @@ internal open class EmployeeRepositoryImpl : EmployeeRepository {
         T.update({ T.id eq id}) {
             it[name] = input.name
             it[gender] = input.gender
+            it[salary] = input.salary
             it[departmentId] = input.departmentId
             it[supervisorId] = input.supervisorId
         }
