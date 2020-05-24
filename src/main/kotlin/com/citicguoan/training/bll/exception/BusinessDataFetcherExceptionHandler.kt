@@ -1,5 +1,9 @@
 package com.citicguoan.training.bll.exception
 
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.databind.JsonSerializer
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import graphql.ErrorClassification
 import graphql.ErrorType
 import graphql.GraphQLError
@@ -40,7 +44,7 @@ internal open class BusinessDataFetcherExceptionHandler : DataFetcherExceptionHa
 
         override fun getErrorType(): ErrorClassification =
             if (exception is BusinessException) {
-                ErrorCode(exception.code)
+                BusinessErrorType(exception.code)
             } else {
                 ErrorType.DataFetchingException
             }
@@ -60,7 +64,20 @@ internal open class BusinessDataFetcherExceptionHandler : DataFetcherExceptionHa
             mutableListOf(sourceLocation)
     }
 
-    private class ErrorCode(val code: String): ErrorClassification {
-        override fun toString(): String = code
+    /*
+     * GraphQLError will be sent to client, client can access property 'errorType'
+     * 1. If it's a string, that means generic exception
+     * 2. If it's a object with property 'code', that means business exception
+     */
+    @JsonSerialize(using = BusinessErrorTypeSerializer::class)
+    private class BusinessErrorType(val code: String): ErrorClassification
+
+    private class BusinessErrorTypeSerializer: JsonSerializer<BusinessErrorType>() {
+        override fun serialize(
+            value: BusinessErrorType,
+            gen: JsonGenerator,
+            serializers: SerializerProvider) {
+            gen.writeString("BUSINESS:${value.code}")
+        }
     }
 }

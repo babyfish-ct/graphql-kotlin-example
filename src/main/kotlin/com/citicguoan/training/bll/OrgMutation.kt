@@ -1,8 +1,9 @@
 package com.citicguoan.training.bll
 
-import com.citicguoan.training.bll.exception.BusinessException
+import com.citicguoan.training.bll.exception.*
 import com.citicguoan.training.dal.DepartmentRepository
 import com.citicguoan.training.dal.EmployeeRepository
+import com.citicguoan.training.model.Employee
 import com.citicguoan.training.model.input.EmployeeInput
 import com.expediagroup.graphql.spring.operations.Mutation
 import org.springframework.stereotype.Service
@@ -27,30 +28,35 @@ open class OrgMutation(
         employeeRepository
             .findByDepartmentIds(listOf(id))
             .takeIf { it.isNotEmpty() }
-            ?.let { list ->
-                throw BusinessException(
-                    "CANNOT_DELETE_DEPARTMENT_WITH_EMPLOYEES",
-                    "Cannot delete the department $id because it has employees",
-                    mapOf(
-                        "departmentId" to id,
-                        "employees" to list.map { it ->
-                            mapOf(
-                                "id" to it.id,
-                                "name" to it.name
-                            )
-                        }
-                    )
-                )
+            ?.let {
+                cannotDeleteDepartmentWithEmployees(id, it)
             } ?: departmentRepository.delete(id) != 0
 
     @Transactional
     open fun createEmployee(input: EmployeeInput): Long =
-        employeeRepository.insert(input)
+        employeeRepository.insert(
+            input.apply {
+                if (departmentRepository.findByIds(listOf(departmentId)).isEmpty()) {
+                    illegalDepartmentId(departmentId)
+                }
+                if (supervisorId !== null &&
+                    employeeRepository.findByIds(listOf(supervisorId)).isEmpty()) {
+                    illegalSupervisorId(supervisorId)
+                }
+            }
+        )
 
     @Transactional
     open fun modifyEmployee(id: Long, input: EmployeeInput): Boolean {
-        validateSupervisorReferenceCycle(id, input.supervisorId)
-        return employeeRepository.update(id, input) != 0
+        validateSupervisorReferenceCycle(id, input.supervisorId, mutableListOf())
+        return employeeRepository.update(
+            id,
+            input.apply {
+                if (departmentRepository.findByIds(listOf(departmentId)).isEmpty()) {
+                    illegalDepartmentId(departmentId)
+                }
+            }
+        ) != 0
     }
 
     @Transactional
@@ -58,34 +64,40 @@ open class OrgMutation(
         employeeRepository
             .findBySupervisorIds(listOf(id))
             .takeIf{ it.isNotEmpty() }
-            ?.let { list ->
-                throw BusinessException(
-                    "CANNOT_DELETE_DEPARTMENT_WITH_SUBORDINATES",
-                    "Cannot delete the employee $id because it has subordinates",
-                    mapOf(
-                        "employeeId" to id,
-                        "subordinates" to list.map { emp ->
-                            mapOf(
-                                "id" to emp.id,
-                                "name" to emp.name
-                            )
-                        }
-                    )
-                )
+            ?.let {
+                cannotDeleteEmployeeWithSubordinates(id, it)
             } ?:employeeRepository.delete(id) != 0
 
-    private fun validateSupervisorReferenceCycle(id: Long, supervisorId: Long?) {
+    private fun validateSupervisorReferenceCycle(
+        id: Long,
+        supervisorId: Long?,
+        supervisors: MutableList<Employee>
+    ) {
         if (supervisorId === null) {
             return
         }
+        val supervisor = employeeRepository
+            .findByIds(listOf(supervisorId))
+            .firstOrNull()
+        if (supervisor === null) {
+            illegalSupervisorId(supervisorId)
+        }
+        supervisors.add(supervisor)
         if (id == supervisorId) {
-            throw IllegalArgumentException("New employee has supervisor cycle")
+            supervisorCycle(
+                id,
+                supervisors.let {
+                    mutableListOf(it[it.size - 1]).apply {
+                        addAll(it)
+                    }
+                }
+            )
         }
         employeeRepository
             .findByIds(listOf(supervisorId))
             .firstOrNull()
             ?.let {
-                validateSupervisorReferenceCycle(id, it.supervisorId)
+                validateSupervisorReferenceCycle(id, it.supervisorId, supervisors)
             }
     }
 }
