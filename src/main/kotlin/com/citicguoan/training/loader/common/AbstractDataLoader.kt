@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture
 abstract class AbstractDataLoader<K, V> (
 
     // Not null:
-    //     Load data from database repositories without transaction scope(like this demo)
+    //     Load data from database repositories with transaction scope(like this demo)
     // Null:
     //     Load data from other sources, such as cache, other micro-services
     transactionManager: PlatformTransactionManager?,
