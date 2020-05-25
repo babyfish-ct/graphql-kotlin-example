@@ -17,9 +17,9 @@ object TEmployee: IdTable<Long>("employee") {
     val salary = decimal("salary", 10, 0)
 
     val departmentId = long("department_id")
-        .references(TDepartment.id, onDelete = ReferenceOption.CASCADE)
+        .references(TDepartment.id)
 
     val supervisorId = long("supervisor_id")
-        .references(TEmployee.id, onDelete = ReferenceOption.SET_NULL)
+        .references(TEmployee.id)
         .nullable()
 }
