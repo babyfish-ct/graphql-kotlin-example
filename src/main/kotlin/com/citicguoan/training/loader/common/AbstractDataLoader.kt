@@ -35,8 +35,9 @@ abstract class AbstractDataLoader<K, V> (
                         transactionManager.commit(it)
                         result
                     }
-            } else
+            } else {
                 rawBatchGetter(keys)
+            }
         }
     },
     optionsInitializer?.let {
