@@ -3,7 +3,7 @@ package com.citicguoan.training.model
 import com.citicguoan.training.loader.DepartmentAvgSalaryLoader
 import com.citicguoan.training.loader.EmployeeListByDepartmentIdLoader
 import com.citicguoan.training.loader.common.loadListAsync
-import com.citicguoan.training.loader.common.loadOptionalReferenceAsync
+import com.citicguoan.training.loader.common.loadOptionalValueAsync
 import graphql.schema.DataFetchingEnvironment
 import java.math.BigDecimal
 import java.util.concurrent.CompletableFuture
@@ -17,7 +17,7 @@ data class Department(
 
     fun avgSalary(env: DataFetchingEnvironment): CompletableFuture<BigDecimal?> =
         env
-            .loadOptionalReferenceAsync<
+            .loadOptionalValueAsync<
                     Long,
                     Pair<Long, BigDecimal?>,
                     DepartmentAvgSalaryLoader

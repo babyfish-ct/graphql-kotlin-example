@@ -5,16 +5,16 @@ import java.util.concurrent.CompletableFuture
 
 inline fun <
         K,
-        R,
-        reified L: AbstractValueLoader<K, R>
-> DataFetchingEnvironment.loadOptionalReferenceAsync(
+        V,
+        reified L: AbstractValueLoader<K, V>
+> DataFetchingEnvironment.loadOptionalValueAsync(
     key: K?
-): CompletableFuture<R?> =
+): CompletableFuture<V?> =
     if (key === null) {
         CompletableFuture.supplyAsync { null }
     } else {
         this
-            .getDataLoader<K, R?>(L::class.qualifiedName)
+            .getDataLoader<K, V?>(L::class.qualifiedName)
             .also {
                 if (it === null) {
                     throw IllegalStateException("No loader ${L::class.qualifiedName}")
@@ -25,13 +25,13 @@ inline fun <
 
 inline fun <
         K,
-        R,
-        reified L: AbstractValueLoader<K, R>
-> DataFetchingEnvironment.loadRequiredReferenceAsync(
+        V,
+        reified L: AbstractValueLoader<K, V>
+> DataFetchingEnvironment.loadRequiredValueAsync(
     key: K
-): CompletableFuture<R> =
+): CompletableFuture<V> =
     this
-        .getDataLoader<K, R?>(L::class.qualifiedName)
+        .getDataLoader<K, V?>(L::class.qualifiedName)
         .also {
             if (it === null) {
                 throw IllegalStateException("No loader ${L::class.qualifiedName}")
