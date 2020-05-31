@@ -51,7 +51,7 @@ internal open class BusinessDataFetcherExceptionHandler : DataFetcherExceptionHa
 
         override fun getExtensions(): MutableMap<String, Any> =
             if (exception is BusinessException) {
-                LinkedHashMap(exception.fields)
+                LinkedHashMap(exception.fields ?: emptyMap())
             } else {
                 mutableMapOf<String, Any>().apply {
                     if (exception is GraphQLError && exception.extensions != null) {

@@ -9,6 +9,27 @@ class BusinessException(
     val fields: Map<String, Any>? = null
 ) : RuntimeException(message)
 
+fun illegalLoginName(loginName: String): Nothing {
+    throw BusinessException(
+        "ILLEGAL_LOGIN_NAME",
+        "The user whose login name is '$loginName' does not exists"
+    )
+}
+
+fun illegalPassword(): Nothing {
+    throw BusinessException(
+        "ILLEGAL_PASSWORD",
+        "The password is illegal"
+    )
+}
+
+fun unauthorized(): Nothing {
+    throw BusinessException(
+        "UNAUTHORIZED",
+        "Unauthorized, please login"
+    )
+}
+
 fun illegalDepartmentId(departmentId: Long): Nothing {
     throw BusinessException(
         "ILLEGAL_DEPARTMENT_ID",
