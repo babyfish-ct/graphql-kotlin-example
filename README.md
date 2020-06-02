@@ -1,4 +1,4 @@
-An GraphQL server-side example by using graphql-kotlin(https://github.com/ExpediaGroup/graphql-kotlin) with data loader
+A GraphQL server-side example by using graphql-kotlin(https://github.com/ExpediaGroup/graphql-kotlin) with data loader
 
 This is server-side demo for JVM, please visit https://github.com/babyfish-ct/graphql-csharp-example to see the server-side demo for .NET Core.
 
