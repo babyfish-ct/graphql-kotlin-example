@@ -23,4 +23,9 @@ data class Department(
                     DepartmentAvgSalaryLoader
             >(id)
             .thenApply { it?.second }
+
+    companion object {
+        fun fakeWithId(id: Long): Department =
+            Department(id, "")
+    }
 }

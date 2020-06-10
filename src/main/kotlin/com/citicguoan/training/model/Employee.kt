@@ -21,11 +21,33 @@ data class Employee(
 ) {
 
     fun department(env: DataFetchingEnvironment): CompletableFuture<Department> =
-        env.loadRequiredValueAsync<Long, Department, DepartmentLoader>(departmentId)
+        env.loadRequiredValueAsync<Long, Department, DepartmentLoader>(
+            departmentId,
+            Department::id
+        ) {
+            Department.fakeWithId(it)
+        }
 
     fun supervisor(env: DataFetchingEnvironment): CompletableFuture<Employee?> =
-        env.loadOptionalValueAsync<Long, Employee, EmployeeLoader>(supervisorId)
+        env.loadOptionalValueAsync<Long, Employee, EmployeeLoader>(
+            supervisorId,
+            Employee::id
+        ) {
+            fakeWithId(it)
+        }
 
     fun subordinates(env: DataFetchingEnvironment): CompletableFuture<List<Employee>> =
         env.loadListAsync<Long, Employee, EmployeeListBySupervisorIdLoader>(id)
+
+    companion object {
+        fun fakeWithId(id: Long): Employee =
+            Employee(
+                id = id,
+                name = "",
+                gender = Gender.MALE,
+                salary = BigDecimal.ZERO,
+                departmentId = -1,
+                supervisorId = null
+            )
+    }
 }
