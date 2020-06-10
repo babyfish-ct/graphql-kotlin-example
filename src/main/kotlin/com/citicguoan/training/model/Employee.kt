@@ -40,6 +40,7 @@ data class Employee(
         env.loadListAsync<Long, Employee, EmployeeListBySupervisorIdLoader>(id)
 
     companion object {
+        // When no properties except id are required by GraphQL
         fun fakeWithId(id: Long): Employee =
             Employee(
                 id = id,

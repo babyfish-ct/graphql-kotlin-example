@@ -25,6 +25,7 @@ data class Department(
             .thenApply { it?.second }
 
     companion object {
+        // When no properties except id are required by GraphQL
         fun fakeWithId(id: Long): Department =
             Department(id, "")
     }
